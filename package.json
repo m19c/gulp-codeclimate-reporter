@@ -5,6 +5,18 @@
   "scripts": {
     "test": "gulp test"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MrBoolean/gulp-codeclimate-reporter.git"
+  },
+  "keywords": [
+    "gulpplugin",
+    "codeclimate",
+    "reporter",
+    "mocha",
+    "code coverage",
+    "coverage"
+  ],
   "author": "Marc Binder <marcandrebinder@gmail.com>",
   "license": "MIT",
   "devDependencies": {
@@ -19,6 +31,7 @@
     "gulp-istanbul": "^0.10.1",
     "gulp-mocha": "^2.1.3",
     "gulp-sequence": "^0.4.1",
+    "mocha": "^2.3.3",
     "stream-array": "^1.1.1"
   },
   "dependencies": {
