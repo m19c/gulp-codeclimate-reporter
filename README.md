@@ -16,13 +16,17 @@ var reporter = reuqire('gulp-codeclimate-reporter');
 gulp.task('codeclimate', function() {
   return gulp
     .src(['path/to/your/lcov.info'], { read: false })
-    .pipe(reporter())
+    .pipe(reporter({ token: '...' }))
   ;
 });
 ```
 
 ## Available options
-...
+Option        | Description
+------------- | -------------
+`token`       | Your codeclimate token
+`executable`  | The path to the [`codeclimate-test-reporter`](https://www.npmjs.com/package/codeclimate-test-reporter)
+`verbose`     | Verbose output
 
 ## License
 The MIT License (MIT)
