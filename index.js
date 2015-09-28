@@ -15,10 +15,6 @@ module.exports = function ccm(options) {
   return through2.obj(function handleFile(file, encoding, callback) {
     var stream = this;
 
-    if (options.verbose) {
-      util.log(`handle ${file.path}`);
-    }
-
     if (file.isStream()) {
       stream.emit('error', new util.PluginError({
         plugin: pluginName,
@@ -31,7 +27,7 @@ module.exports = function ccm(options) {
     exec(`CODECLIMATE_REPO_TOKEN=${options.token} ${options.executable} < ${file.path}`)
       .then(function execCompleted(stdout, stderr) {
         if (stderr) {
-          stream.emit('error', util.PluginError({
+          stream.emit('error', new util.PluginError({
             plugin: pluginName,
             message: stderr
           }));
@@ -40,6 +36,10 @@ module.exports = function ccm(options) {
         }
 
         stream.push(stdout);
+
+        if (options.verbose) {
+          util.log(`Coverage file posted: ${file.path}`);
+        }
 
         callback();
       })

@@ -1,8 +1,7 @@
-var gulp = require('gulp');
 var reporter = require('../');
 var util = require('gulp-util');
-var File = util.File;
 var array = require('stream-array');
+var File = util.File;
 
 function stream(file) {
   return array([file || new File({

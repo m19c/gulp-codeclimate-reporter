@@ -1,7 +1,9 @@
 var gulp = require('gulp');
+var sequence = require('gulp-sequence');
 var mocha = require('gulp-mocha');
-var coverage = require('gulp-coverage');
+var istanbul = require('gulp-istanbul');
 var eslint = require('gulp-eslint');
+var reporter = require('./');
 
 gulp.task('lint', function lint() {
   return gulp
@@ -12,21 +14,31 @@ gulp.task('lint', function lint() {
   ;
 });
 
-gulp.task('test', function test() {
+gulp.task('test.instrument', function() {
   return gulp
-    .src(['index.js'], { read: false })
-    .pipe(coverage.instrument({
-      pattern: ['**/test*'],
-      debugDirectory: 'dist/debug'
-    }))
-    .pipe(mocha())
-    .pipe(coverage.gather())
-    .pipe(coverage.format([
-      { reporter: 'html', outFile: 'coverage.html' },
-      { reporter: 'lcov', outFile: 'coverage.lcov' }
-    ]))
-    .pipe(gulp.dest('dist/report'))
+    .src(['index.js'])
+    .pipe(istanbul())
+    .pipe(istanbul.hookRequire())
   ;
 });
 
-gulp.task('default', ['lint', 'test']);
+gulp.task('test', ['test.instrument'], function() {
+  return gulp
+    .src(['test/**/*.test.js'])
+    .pipe(mocha())
+    .pipe(istanbul.writeReports({
+      dir: './dist/report'
+    }))
+  ;
+});
+
+gulp.task('codeclimate', function sendToCodeclimate() {
+  return gulp
+    .src(['dist/report/lcov.info'], { read: false })
+    .pipe(reporter({
+      token: '83d1a6741b82ae334cbc797b967958cff1462691fcdb082b222087a63a6d2a5d'
+    }))
+  ;
+});
+
+gulp.task('default', sequence(['lint', 'test'], 'codeclimate'));
