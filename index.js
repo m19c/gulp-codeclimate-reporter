@@ -24,7 +24,7 @@ module.exports = function ccm(options) {
       return callback();
     }
 
-    exec(`CODECLIMATE_REPO_TOKEN=${options.token} ${options.executable} < ${file.path}`)
+    exec('CODECLIMATE_REPO_TOKEN=' + options.token + ' ' + options.executable + ' < ' + file.path)
       .then(function execCompleted(stdout, stderr) {
         if (stderr) {
           stream.emit('error', new util.PluginError({
@@ -38,7 +38,7 @@ module.exports = function ccm(options) {
         stream.push(stdout);
 
         if (options.verbose) {
-          util.log(`Coverage file posted: ${file.path}`);
+          util.log('Coverage file posted: ' + file.path);
         }
 
         callback();
