@@ -13,16 +13,28 @@ function stream(file) {
 }
 
 describe('gulp-codeclimate-reporter', function gulpCodeclimateReporter() {
-  it('throws an error if one of the obtained stream files does not exist', function noContent(done) {
+  it('should throw an error if one of the obtained stream files does not exist', function noContent(done) {
     stream()
-      .pipe(reporter()
-        .on('error', function expectedError() {
-          done();
-        })
-        .on('end', function handleEnd() {
-          done(new Error('Wrong event'));
-        })
-      )
+      .pipe(reporter())
+      .on('error', function expectedError() {
+        done();
+      })
+      .on('end', function handleEnd() {
+        done(new Error('Wrong event'));
+      })
+    ;
+  });
+  it('should support path with spaces', function withSpaces(done) {
+    // this.timeout(5000);
+    var file = new File({
+      cwd: process.cwd(),
+      path: 'test/coverage with spaces.lcov',
+      contents: new Buffer('')
+    });
+    stream(file)
+      .pipe(reporter())
+      .on('error', done)
+      .on('end', done)
     ;
   });
 });
