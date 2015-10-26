@@ -25,12 +25,12 @@ describe('gulp-codeclimate-reporter', function gulpCodeclimateReporter() {
     ;
   });
   it('should support path with spaces', function withSpaces(done) {
-    // this.timeout(5000);
     var file = new File({
       cwd: process.cwd(),
-      path: 'test/coverage with spaces.lcov',
+      path: 'test/coverage-with-spaces.lcov',
       contents: new Buffer('')
     });
+
     stream(file)
       .pipe(reporter())
       .on('error', done)
