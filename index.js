@@ -1,5 +1,6 @@
 var pluginName = 'gulp-codeclimate-reporter';
-var util = require('gulp-util');
+var util = require('util');
+var gutil = require('gulp-util');
 var through2 = require('through2');
 var exec = require('mz/child_process').exec;
 var merge = require('lodash.merge');
@@ -16,7 +17,7 @@ module.exports = function ccm(options) {
     var stream = this;
 
     if (file.isStream()) {
-      stream.emit('error', new util.PluginError({
+      stream.emit('error', new gutil.PluginError({
         plugin: pluginName,
         message: 'Streams are not supported.'
       }));
@@ -24,10 +25,10 @@ module.exports = function ccm(options) {
       return callback();
     }
 
-    exec('CODECLIMATE_REPO_TOKEN=' + options.token + ' ' + options.executable + ' < ' + file.path)
+    exec(util.format('CODECLIMATE_REPO_TOKEN=%s %s < "%s"', options.token, options.executable, file.path))
       .then(function execCompleted(stdout, stderr) {
         if (stderr) {
-          stream.emit('error', new util.PluginError({
+          stream.emit('error', new gutil.PluginError({
             plugin: pluginName,
             message: stderr
           }));
@@ -35,16 +36,14 @@ module.exports = function ccm(options) {
           return callback();
         }
 
-        stream.push(stdout);
-
         if (options.verbose) {
-          util.log('Coverage file posted: ' + file.path);
+          gutil.log('Coverage file posted: "%s"', file.path);
         }
 
-        callback();
+        stream.emit('end');
       })
       .catch(function throwPluginError(err) {
-        stream.emit('error', new util.PluginError({
+        stream.emit('error', new gutil.PluginError({
           plugin: pluginName,
           message: err.message
         }));
