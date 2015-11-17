@@ -9,6 +9,7 @@ var path = require('path');
 
 module.exports = function ccm(options) {
   var executablePath = path.join(__dirname, 'node_modules', '.bin', 'codeclimate-test-reporter');
+
   try {
     fs.lstatSync(executablePath);
   } catch (err) {
