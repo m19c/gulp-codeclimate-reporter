@@ -4,12 +4,20 @@ var gutil = require('gulp-util');
 var through2 = require('through2');
 var exec = require('mz/child_process').exec;
 var merge = require('lodash.merge');
+var fs = require('fs');
 var path = require('path');
 
 module.exports = function ccm(options) {
+  var executablePath = path.join(__dirname, 'node_modules', '.bin', 'codeclimate-test-reporter');
+  try {
+    fs.lstatSync(executablePath);
+  } catch (err) {
+    executablePath = path.join(__dirname, '../', '.bin', 'codeclimate-test-reporter');
+  }
+
   options = merge({
     token: null,
-    executable: path.join(__dirname, 'node_modules', '.bin', 'codeclimate-test-reporter'),
+    executable: executablePath,
     verbose: true
   }, options || {});
 
@@ -49,7 +57,6 @@ module.exports = function ccm(options) {
         }));
 
         callback();
-      })
-    ;
+      });
   });
 };
