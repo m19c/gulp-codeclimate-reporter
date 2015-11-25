@@ -1,4 +1,5 @@
 var pluginName = 'gulp-codeclimate-reporter';
+var os = require('os');
 var util = require('util');
 var gutil = require('gulp-util');
 var through2 = require('through2');
@@ -19,11 +20,13 @@ module.exports = function ccm(options) {
   options = merge({
     token: null,
     executable: executablePath,
-    verbose: true
+    verbose: true,
+    powershell: false
   }, options || {});
 
   return through2.obj(function handleFile(file, encoding, callback) {
     var stream = this;
+    var variable = util.format((os.platform() === 'win32') ? '$env:CODECLIMATE_REPO_TOKEN="%s" &&' : 'CODECLIMATE_REPO_TOKEN=%s', options.token);
 
     if (file.isStream()) {
       stream.emit('error', new gutil.PluginError({
@@ -34,7 +37,7 @@ module.exports = function ccm(options) {
       return callback();
     }
 
-    exec(util.format('CODECLIMATE_REPO_TOKEN=%s %s < "%s"', options.token, options.executable, file.path))
+    exec(util.format('%s %s < "%s"', variable, options.executable, file.path))
       .then(function execCompleted(stdout, stderr) {
         if (stderr) {
           stream.emit('error', new gutil.PluginError({
