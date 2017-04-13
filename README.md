@@ -11,7 +11,7 @@ npm i --save-dev gulp-codeclimate-reporter
 ## Usage
 ```javascript
 var gulp     = require('gulp');
-var reporter = reuqire('gulp-codeclimate-reporter');
+var reporter = require('gulp-codeclimate-reporter');
 
 gulp.task('codeclimate', function() {
   return gulp
