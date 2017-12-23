@@ -52,7 +52,7 @@ module.exports = function ccm(options) {
           gutil.log('Coverage file posted: "%s"', file.path);
         }
 
-        stream.emit('end');
+        callback();
       })
       .catch(function throwPluginError(err) {
         stream.emit('error', new gutil.PluginError({
